@@ -1,8 +1,8 @@
 package com.dronelogfileapi.domain.flight.flightdata;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class LogfileDeviceOrigin {
 
     private String user_interface_idiom;

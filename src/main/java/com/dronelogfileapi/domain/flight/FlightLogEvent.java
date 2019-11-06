@@ -12,6 +12,6 @@ public class FlightLogEvent {
     private int logfile_id;
 
     private String event_info;
-    private LocalDateTime event_timestamp;
+    private String event_timestamp;
     private String event_type;
 }

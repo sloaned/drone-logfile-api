@@ -1,13 +1,13 @@
 package com.dronelogfileapi.domain.flight;
 
-import lombok.Getter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 public class FlightLogMessageFile {
 
-    private LocalDateTime creation_dtg;
+    private String creation_dtg;
     private String logging_type;
     private String filename;
 }

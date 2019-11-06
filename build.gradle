@@ -1,5 +1,5 @@
-group 'DroneLogfileApi'
-version '1.0-SNAPSHOT'
+import org.flywaydb.gradle.task.FlywayMigrateTask
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 buildscript {
     repositories {
@@ -11,8 +11,17 @@ buildscript {
     }
 }
 
+plugins {
+    id("org.springframework.boot") version "2.1.9.RELEASE"
+    id "com.avast.gradle.docker-compose" version "0.9.4"
+    id("org.flywaydb.flyway") version "6.0.4"
+}
+
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+
+group 'DroneLogfileApi'
+version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -21,14 +30,30 @@ repositories {
 }
 
 dependencies {
+    compile("org.apache.commons:commons-collections4:4.1")
     compile 'org.projectlombok:lombok:1.18.10'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18' //'5.1.13'
     // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
 
-    compile("org.springframework.integration:spring-integration-jdbc:5.0.4.RELEASE")
+    compile("org.springframework.integration:spring-integration-jdbc:5.2.1.RELEASE")
+    compile group: 'org.springframework', name: 'spring-core', version: '5.2.1.RELEASE'
 
-    compile("org.springframework.boot:spring-boot-starter-web")
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.0.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+task runScripts(type: FlywayMigrateTask, description: "runs database scripts") {
+    url = "jdbc:mysql://localhost:3306/skyward?allowPublicKeyRetrieval=true&useSSL=false&defaultSchema=skyward"
+    user = "root"
+    password = "strongpassword"
+    schemas = ["skyward"]
+    locations = ["filesystem:src/main/resources/scripts"]
+}
+
+task tomcatRun(type: BootRun, dependsOn: runScripts) {}
+
+
+

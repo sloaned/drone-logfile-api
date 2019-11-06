@@ -1,9 +1,9 @@
 package com.dronelogfileapi.domain;
 
 import com.dronelogfileapi.domain.flight.LogMessage;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class FlightLogfile {
 
     private String logfile_id;

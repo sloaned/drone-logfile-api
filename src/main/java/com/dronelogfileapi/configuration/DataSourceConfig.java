@@ -18,7 +18,7 @@ public class DataSourceConfig {
         hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
         hikariConfig.setJdbcUrl("jdbc:mysql://localhost:3306/skyward?allowPublicKeyRetrieval=true&useSSL=false");
         hikariConfig.setUsername("root");
-        hikariConfig.setPassword("password");
+        hikariConfig.setPassword("strongpassword");
         hikariConfig.setPoolName("database");
         hikariConfig.setMaximumPoolSize(10);
         hikariConfig.addDataSourceProperty("cachePrepStmts", true);

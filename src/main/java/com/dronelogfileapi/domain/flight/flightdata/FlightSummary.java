@@ -1,12 +1,11 @@
 package com.dronelogfileapi.domain.flight.flightdata;
 
-import com.dronelogfileapi.domain.flight.flightdata.AircraftSmartGohome;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class FlightSummary {
 
-    private float home_location_lat;
-    private float home_location_lon;
+    private String home_location_lat;
+    private String home_location_lon;
     private AircraftSmartGohome aircraft_smart_gohome;
 }

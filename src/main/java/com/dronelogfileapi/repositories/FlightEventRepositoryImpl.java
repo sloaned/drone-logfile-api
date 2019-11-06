@@ -1,6 +1,7 @@
 package com.dronelogfileapi.repositories;
 
 import com.dronelogfileapi.domain.flight.FlightLogEvent;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -50,7 +50,7 @@ public class FlightEventRepositoryImpl implements FlightEventRepository {
                 FlightLogEvent event = events.get(i);
                 ps.setInt(1, event.getLogfile_id());
                 ps.setString(2, event.getEvent_info());
-                ps.setTimestamp(3, Timestamp.valueOf(event.getEvent_timestamp()));
+                ps.setString(3, event.getEvent_timestamp());
                 ps.setString(4, event.getEvent_type());
             }
 
@@ -80,9 +80,8 @@ public class FlightEventRepositoryImpl implements FlightEventRepository {
 
         event.setLogfile_id(rs.getInt("logfile_id"));
         event.setEvent_info(rs.getString("event_info"));
-        if (rs.getTimestamp("event_timestamp") != null) {
-            event.setEvent_timestamp(rs.getTimestamp("event_timestamp").toLocalDateTime());
-        }
+        event.setEvent_timestamp(rs.getString("event_timestamp"));
+
         event.setEvent_type(rs.getString("event_type"));
 
         return event;

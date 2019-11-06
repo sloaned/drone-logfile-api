@@ -1,3 +1,7 @@
+CREATE SCHEMA IF NOT EXISTS `skyward`;
+
+USE SCHEMA `skyward`;
+
 CREATE TABLE IF NOT EXISTS `logfile` (
   `logfile_id` INTEGER NOT NULL AUTO_INCREMENT,
   `exchange_type` VARCHAR(80),
@@ -5,11 +9,11 @@ CREATE TABLE IF NOT EXISTS `logfile` (
   `uploadingOrgUuid` VARCHAR(80),
   `uploadingPilotUuid` VARCHAR(80),
   `flight_session_id` VARCHAR(255),
-  `file_creation_dtg` TIMESTAMP,
+  `file_creation_dtg` VARCHAR(40),
   `file_logging_type` VARCHAR(80),
   `filename` VARCHAR(255),
   `altitude_system` VARCHAR(80),
-  `logging_start_dtg` TIMESTAMP,
+  `logging_start_dtg` VARCHAR(40),
   `camera_serial_number` VARCHAR(80),
   `camera_model` VARCHAR(80),
   `camera_firmware_version` VARCHAR(80),
@@ -22,18 +26,18 @@ CREATE TABLE IF NOT EXISTS `logfile` (
   `aircraft_name` VARCHAR(255),
   `aircraft_model` VARCHAR(255),
   `aircraft_firmware_version` VARCHAR(80),
-  `home_location_lat` FLOAT(12),
-  `home_location_lon` FLOAT(12),
-  `aircraft_smart_gohome_flight_return_time` FLOAT(12),
+  `home_location_lat` DOUBLE(12),
+  `home_location_lon` DOUBLE(12),
+  `aircraft_smart_gohome_flight_return_time` DOUBLE(12),
   `aircraft_smart_gohome_landing_power` INT(10),
   `aircraft_smart_gohome_return_power` INT(10),
-  `aircraft_smart_gohome_landing_radius` FLOAT(12),
-  `aircraft_smart_gohome_landinG_time` FLOAT(12),
+  `aircraft_smart_gohome_landing_radius` DOUBLE(12),
+  `aircraft_smart_gohome_landing_time` DOUBLE(12),
   `gcs_manufacturer` VARCHAR(80),
   `gcs_model` VARCHAR(80),
   `gcs_version` VARCHAR(80),
-  `flight_session_start` TIMESTAMP,
-  `flight_session_end` TIMESTAMP,
+  `flight_session_start` VARCHAR(40),
+  `flight_session_end` VARCHAR(40),
   `flight_controller_serial_number` VARCHAR(80),
   `flight_controller_firmware_version` VARCHAR(80),
   `battery_serial_number` VARCHAR(80),
@@ -45,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `logfile` (
   `device_origin_user_interface_idiom` VARCHAR(80),
   `device_origin_operating_system` VARCHAR(80),
   `device_origin_model` VARCHAR(80),
-  `device_origin_device_ssid` VARCHAR(80)
+  `device_origin_device_ssid` VARCHAR(80),
+  `message_type` VARCHAR(80)
   PRIMARY KEY (`logfile_id`),
   UNIQUE KEY `flight_session_id_UNIQUE` (`flight_session_id`)
 );
