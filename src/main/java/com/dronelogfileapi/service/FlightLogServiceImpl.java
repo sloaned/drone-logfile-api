@@ -1,7 +1,8 @@
 package com.dronelogfileapi.service;
 
 import com.dronelogfileapi.domain.FlightLogfile;
-import com.dronelogfileapi.domain.FlightStartEndValue;
+import com.dronelogfileapi.domain.FlightStartEndValueReport;
+import com.dronelogfileapi.domain.FlightStartEndValueReport.FlightStartEndValue;
 import com.dronelogfileapi.domain.flight.FlightLog;
 import com.dronelogfileapi.domain.flight.FlightLogItem;
 import com.dronelogfileapi.domain.flight.FlightLogKey;
@@ -51,7 +52,7 @@ public class FlightLogServiceImpl implements FlightLogService {
     }
 
     @Override
-    public List<FlightStartEndValue> getLogStartAndEndValues(Integer logfileId, List<String> fields) throws FileNotFoundException {
+    public FlightStartEndValueReport getLogStartAndEndValues(Integer logfileId, List<String> fields) throws FileNotFoundException {
         List<FlightStartEndValue> startEndValues = new ArrayList<>();
 
         FlightLogfile file = getLogfile(logfileId);
@@ -68,23 +69,19 @@ public class FlightLogServiceImpl implements FlightLogService {
                 int index = log.getFlight_logging_keys().indexOf(field);
 
                 if (index >= 0) {
-                    FlightStartEndValue flightStartEndValue = new FlightStartEndValue();
-                    flightStartEndValue.setFieldName(field);
-                    flightStartEndValue.setStartValue(firstList.get(index));
-                    flightStartEndValue.setEndValue(lastList.get(index));
-
+                    FlightStartEndValue flightStartEndValue = new FlightStartEndValue(field, firstList.get(index), lastList.get(index));
                     startEndValues.add(flightStartEndValue);
                 }
             }
         }
 
-        return startEndValues;
+        return new FlightStartEndValueReport(logfileId, startEndValues);
     }
 
 
     private static class FlightLogConverter {
 
-        public static FlightLog convertForIntake(FlightLog flightLog) {
+        private static FlightLog convertForIntake(FlightLog flightLog) {
 
             List<FlightLogItem> flightLogItems = new ArrayList<>();
             List<FlightLogKey> flightLogKeys = new ArrayList<>();
@@ -263,7 +260,7 @@ public class FlightLogServiceImpl implements FlightLogService {
             return flightLog;
         }
 
-        public static FlightLog convertForExport(FlightLog flightLog) {
+        private static FlightLog convertForExport(FlightLog flightLog) {
 
             List<FlightLogKey> keys = flightLog.getFlightLogKeys();
             List<FlightLogItem> items = flightLog.getFlightLogItems();

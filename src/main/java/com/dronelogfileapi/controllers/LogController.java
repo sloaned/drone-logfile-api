@@ -1,7 +1,7 @@
 package com.dronelogfileapi.controllers;
 
 import com.dronelogfileapi.domain.FlightLogfile;
-import com.dronelogfileapi.domain.FlightStartEndValue;
+import com.dronelogfileapi.domain.FlightStartEndValueReport;
 import com.dronelogfileapi.service.FlightLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,20 +47,20 @@ public class LogController {
 
     @GetMapping("/{id}/values/{fields}")
     @ResponseBody
-    public List<FlightStartEndValue> getLogStartAndEndValues(
+    public FlightStartEndValueReport getLogStartAndEndValues(
             @PathVariable(name = "id") Integer id,
             @PathVariable(name = "fields") List<String> fields,
             HttpServletResponse response) throws IOException {
-        List<FlightStartEndValue> values = null;
+        FlightStartEndValueReport report = null;
         try {
-            values = flightLogService.getLogStartAndEndValues(id, fields);
+            report = flightLogService.getLogStartAndEndValues(id, fields);
         } catch (Exception e) {
             LOGGER.error("Error occurred retrieving start and end values for logfile with id {}", id, e);
             response.sendError(404, String.format("There is no logfile for id %s", id));
         }
 
 
-        return values;
+        return report;
     }
 
 }

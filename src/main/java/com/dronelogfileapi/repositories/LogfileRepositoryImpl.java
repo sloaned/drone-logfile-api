@@ -81,16 +81,9 @@ public class LogfileRepositoryImpl implements LogfileRepository {
             ps.setString(20, file.getMessage().getFlight_data().getAircraft().getName());
             ps.setString(21, file.getMessage().getFlight_data().getAircraft().getModel());
             ps.setString(22, file.getMessage().getFlight_data().getAircraft().getFirmware_version());
-            if (file.getMessage().getFlight_data().getSummary().getHome_location_lat() != null) {
-                ps.setDouble(23, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lat()));
-            } else {
-                ps.setNull(23, Types.NUMERIC);
-            }
-            if (file.getMessage().getFlight_data().getSummary().getHome_location_lon() != null) {
-                ps.setDouble(24, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lon()));
-            } else {
-                ps.setNull(24, Types.NUMERIC);
-            }
+            ps.setString(23, file.getMessage().getFlight_data().getSummary().getHome_location_lat());
+            ps.setString(24, file.getMessage().getFlight_data().getSummary().getHome_location_lon());
+
             if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getFlight_return_time() != null) {
                 ps.setDouble(25, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getFlight_return_time()));
             } else {
