@@ -42,7 +42,6 @@ public class FlightLogKeyRepositoryImpl implements FlightLogKeyRepository {
 
         LOGGER.info("Batch save request for {} keys", keys.size());
 
-
         BatchPreparedStatementSetter statement = new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -69,7 +68,7 @@ public class FlightLogKeyRepositoryImpl implements FlightLogKeyRepository {
                 logfileId
         );
 
-        return keys == null ? new ArrayList<>() : keys;
+        return keys;
     }
     
     private RowMapper<FlightLogKey> logKeyRowMapper = (rs, rowNum) -> {

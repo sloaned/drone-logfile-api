@@ -124,7 +124,7 @@ public class FlightLogItemRepositoryImpl implements FlightLogItemRepository {
                 logfileId
         );
 
-        return items == null ? new ArrayList<>() : items;
+        return items;
     }
 
     private RowMapper<FlightLogItem> logItemRowMapper = (rs, rowNum) -> {

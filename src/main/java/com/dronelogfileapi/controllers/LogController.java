@@ -48,17 +48,17 @@ public class LogController {
     @GetMapping("/{id}/values/{fields}")
     @ResponseBody
     public FlightStartEndValueReport getLogStartAndEndValues(
-            @PathVariable(name = "id") Integer id,
+            @PathVariable(name = "id") String id,
             @PathVariable(name = "fields") List<String> fields,
             HttpServletResponse response) throws IOException {
         FlightStartEndValueReport report = null;
         try {
-            report = flightLogService.getLogStartAndEndValues(id, fields);
+            Integer logfileId = Integer.valueOf(id);
+            report = flightLogService.getLogStartAndEndValues(logfileId, fields);
         } catch (Exception e) {
             LOGGER.error("Error occurred retrieving start and end values for logfile with id {}", id, e);
             response.sendError(404, String.format("There is no logfile for id %s", id));
         }
-
 
         return report;
     }
