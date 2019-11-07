@@ -10,16 +10,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class FlightLogServiceImpl implements FlightLogService {
-
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     private LogfileRepository logfileRepository;
 
@@ -38,7 +36,7 @@ public class FlightLogServiceImpl implements FlightLogService {
     }
 
     @Override
-    public FlightLogfile getLogfile(Integer logfileId) throws Exception {
+    public FlightLogfile getLogfile(Integer logfileId) throws FileNotFoundException {
         FlightLogfile file = logfileRepository.findById(logfileId);
 
         if (file != null) {
@@ -46,14 +44,14 @@ public class FlightLogServiceImpl implements FlightLogService {
 
             file.getMessage().setFlight_logging(FlightLogConverter.convertForExport(log));
         } else {
-            throw new Exception("No logfile found with id " + logfileId);
+            throw new FileNotFoundException("There is no logfile with that id");
         }
 
         return file;
     }
 
     @Override
-    public List<FlightStartEndValue> getLogStartAndEndValues(Integer logfileId, List<String> fields) throws Exception {
+    public List<FlightStartEndValue> getLogStartAndEndValues(Integer logfileId, List<String> fields) throws FileNotFoundException {
         List<FlightStartEndValue> startEndValues = new ArrayList<>();
 
         FlightLogfile file = getLogfile(logfileId);
@@ -82,14 +80,6 @@ public class FlightLogServiceImpl implements FlightLogService {
 
         return startEndValues;
     }
-
-    /*
-    Integer saveLogfile(FlightLogfile logfile);
-
-    FlightLogfile getLogfile(Integer logfileId);
-
-    List<FlightStartEndValue> getLogStartAndEndValues(Integer logfileId, List<String> fields);
-     */
 
 
     private static class FlightLogConverter {
@@ -126,37 +116,37 @@ public class FlightLogServiceImpl implements FlightLogService {
                             item.setTimestamp(value.toString());
                             break;
                         case "aircraft_lon":
-                            item.setAircraft_lon(((Number) value).doubleValue());
+                            item.setAircraft_lon(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_lat":
-                            item.setAircraft_lat(((Number) value).doubleValue());
+                            item.setAircraft_lat(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_altitude":
-                            item.setAircraft_altitude(((Number) value).doubleValue());
+                            item.setAircraft_altitude(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_speed":
-                            item.setAircraft_speed(((Number) value).doubleValue());
+                            item.setAircraft_speed(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_heading":
-                            item.setAircraft_heading(((Number) value).doubleValue());
+                            item.setAircraft_heading(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_vel_x":
-                            item.setAircraft_vel_x(((Number) value).doubleValue());
+                            item.setAircraft_vel_x(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_vel_y":
-                            item.setAircraft_vel_y(((Number) value).doubleValue());
+                            item.setAircraft_vel_y(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_vel_z":
-                            item.setAircraft_vel_z(((Number) value).doubleValue());
+                            item.setAircraft_vel_z(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_pitch":
-                            item.setAircraft_pitch(((Number) value).doubleValue());
+                            item.setAircraft_pitch(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_roll":
-                            item.setAircraft_roll(((Number) value).doubleValue());
+                            item.setAircraft_roll(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_yaw":
-                            item.setAircraft_yaw(((Number) value).doubleValue());
+                            item.setAircraft_yaw(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_satellites":
                             item.setAircraft_satellites((Integer) value);
@@ -180,7 +170,7 @@ public class FlightLogServiceImpl implements FlightLogService {
                             item.setAircraft_ultrasonic_on(((Integer) value) != 0);
                             break;
                         case "aircraft_ultrasonic_altitude":
-                            item.setAircraft_ultrasonic_altitude(((Number) value).doubleValue());
+                            item.setAircraft_ultrasonic_altitude(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_vision_on":
                             item.setAircraft_vision_on(((Integer) value) != 0);
@@ -189,7 +179,7 @@ public class FlightLogServiceImpl implements FlightLogService {
                             item.setAircraft_gps_signal(((Integer) value) != 0);
                             break;
                         case "aircraft_gps_signal_value":
-                            item.setAircraft_gps_signal_value(((Number) value).doubleValue());
+                            item.setAircraft_gps_signal_value(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "aircraft_smart_gohome_flight_time_remaining":
                             item.setAircraft_smart_gohome_flight_time_remaining((Integer) value);
@@ -210,7 +200,7 @@ public class FlightLogServiceImpl implements FlightLogService {
                             item.setBattery_voltage((Integer) value);
                             break;
                         case "battery_temperature":
-                            item.setBattery_temperature(((Number) value).doubleValue());
+                            item.setBattery_temperature(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "battery_charge":
                             item.setBattery_charge((Integer)value);
@@ -218,26 +208,47 @@ public class FlightLogServiceImpl implements FlightLogService {
                         case "battery_last_updated":
                             item.setBattery_last_updated(value.toString());
                             break;
+                        case "battery_cell_one":
+                            item.setBattery_cell_one((Integer)value);
+                            break;
+                        case "battery_cell_two":
+                            item.setBattery_cell_two((Integer)value);
+                            break;
+                        case "battery_cell_three":
+                            item.setBattery_cell_three((Integer)value);
+                            break;
+                        case "battery_cell_four":
+                            item.setBattery_cell_four((Integer)value);
+                            break;
+                        case "battery_cell_five":
+                            item.setBattery_cell_five((Integer)value);
+                            break;
+                        case "battery_cell_six":
+                            item.setBattery_cell_six((Integer)value);
+                            break;
+                        case "battery_cell_last_updated":
+                            item.setBattery_cell_last_updated(value.toString());
+                            break;
                         case "gcs_lat":
-                            item.setGcs_lat(((Number) value).doubleValue());
+                            item.setGcs_lat((BigDecimal.valueOf(((Number)value).doubleValue())));
                             break;
                         case "gcs_lon":
-                            item.setGcs_lon(((Number) value).doubleValue());
+                            item.setGcs_lon(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "gcs_location_last_updated":
                             item.setGcs_location_last_updated(value.toString());
                             break;
                         case "gimbal_pitch":
-                            item.setGimbal_pitch(((Number) value).doubleValue());
+                            item.setGimbal_pitch(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "gimbal_roll":
-                            item.setGimbal_roll(((Number) value).doubleValue());
+                            item.setGimbal_roll(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "gimbal_yaw":
-                            item.setGimbal_yaw(((Number) value).doubleValue());
+                            item.setGimbal_yaw(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         case "gimbal_mode":
-                            item.setGimbal_mode(((Number) value).doubleValue());
+                            item.setGimbal_mode(BigDecimal.valueOf(((Number)value).doubleValue()));
                             break;
                         default:
                             break;
@@ -277,7 +288,7 @@ public class FlightLogServiceImpl implements FlightLogService {
 
                     switch(field) {
                         case "timestamp":
-                            itemsList.add(item.getTimestamp().toString());
+                            itemsList.add(getTimestampFormat(item.getTimestamp()));
                             break;
                         case "aircraft_lon":
                             itemsList.add(item.getAircraft_lon());
@@ -352,7 +363,7 @@ public class FlightLogServiceImpl implements FlightLogService {
                             itemsList.add(item.getAircraft_smart_gohome_requesting() ? 1 : 0);
                             break;
                         case "aircraft_last_updated":
-                            itemsList.add(item.getAircraft_last_updated().toString());
+                            itemsList.add(getTimestampFormat(item.getAircraft_last_updated()));
                             break;
                         case "battery_power":
                             itemsList.add(item.getBattery_power());
@@ -370,7 +381,28 @@ public class FlightLogServiceImpl implements FlightLogService {
                             itemsList.add(item.getBattery_charge());
                             break;
                         case "battery_last_updated":
-                            itemsList.add(item.getBattery_last_updated().toString());
+                            itemsList.add(getTimestampFormat(item.getBattery_last_updated()));
+                            break;
+                        case "battery_cell_one":
+                            itemsList.add(item.getBattery_cell_one());
+                            break;
+                        case "battery_cell_two":
+                            itemsList.add(item.getBattery_cell_two());
+                            break;
+                        case "battery_cell_three":
+                            itemsList.add(item.getBattery_cell_three());
+                            break;
+                        case "battery_cell_four":
+                            itemsList.add(item.getBattery_cell_four());
+                            break;
+                        case "battery_cell_five":
+                            itemsList.add(item.getBattery_cell_five());
+                            break;
+                        case "battery_cell_six":
+                            itemsList.add(item.getBattery_cell_six());
+                            break;
+                        case "battery_cell_last_updated":
+                            itemsList.add(getTimestampFormat(item.getBattery_cell_last_updated()));
                             break;
                         case "gcs_lat":
                             itemsList.add(item.getGcs_lat());
@@ -379,7 +411,7 @@ public class FlightLogServiceImpl implements FlightLogService {
                             itemsList.add(item.getGcs_lon());
                             break;
                         case "gcs_location_last_updated":
-                            itemsList.add(item.getGcs_location_last_updated().toString());
+                            itemsList.add(getTimestampFormat(item.getGcs_location_last_updated()));
                             break;
                         case "gimbal_pitch":
                             itemsList.add(item.getGimbal_pitch());
@@ -406,10 +438,8 @@ public class FlightLogServiceImpl implements FlightLogService {
             return flightLog;
         }
 
-        private static LocalDateTime getLocalDateTime(String timeString) {
-            System.out.println("timeString = " + timeString);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-            return LocalDateTime.parse(timeString, formatter);
+        private static Object getTimestampFormat(String val) {
+            return "0".equals(val) ? Integer.valueOf(val) : val;
         }
     }
 }

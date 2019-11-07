@@ -3,7 +3,6 @@ package com.dronelogfileapi.domain.flight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,4 +19,16 @@ public class FlightLog {
     private List<FlightLogItem> flightLogItems = new ArrayList<>();
     @JsonIgnore
     private List<FlightLogKey> flightLogKeys = new ArrayList<>();
+
+    public List<FlightLogEvent> getEvent() {
+        return event == null ? new ArrayList<>() : event;
+    }
+
+    public List<List<Object>> getFlight_logging_items() {
+        return  flight_logging_items == null ? new ArrayList<>() : flight_logging_items;
+    }
+
+    public List<String> getFlight_logging_keys() {
+        return flight_logging_keys == null ? new ArrayList<>() : flight_logging_keys;
+    }
 }

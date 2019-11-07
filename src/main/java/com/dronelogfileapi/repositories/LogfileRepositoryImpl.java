@@ -12,9 +12,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -36,6 +39,7 @@ public class LogfileRepositoryImpl implements LogfileRepository {
         this.keyRepository = keyRepository;
     }
 
+    @Transactional
     @Override
     public Integer save(FlightLogfile file) {
         String sql = "INSERT INTO flight_logfile (exchange_type, exchanger, uploadingOrgUuid, uploadingPilotUuid, " +
@@ -54,17 +58,17 @@ public class LogfileRepositoryImpl implements LogfileRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
         jdbcTemplate.update(conn -> {
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, file.getExchange_type());
             ps.setString(2, file.getExchanger());
             ps.setString(3, file.getUploadingOrgUuid());
             ps.setString(4, file.getUploadingPilotUuid());
             ps.setString(5, file.getFlight_session_id());
-            ps.setString(6, String.valueOf(file.getMessage().getFile().getCreation_dtg()));
+            ps.setString(6, file.getMessage().getFile().getCreation_dtg());
             ps.setString(7, file.getMessage().getFile().getLogging_type());
             ps.setString(8, file.getMessage().getFile().getFilename());
             ps.setString(9, file.getMessage().getFlight_logging().getAltitude_system());
-            ps.setString(10, String.valueOf(file.getMessage().getFlight_logging().getLogging_start_dtg()));
+            ps.setString(10, file.getMessage().getFlight_logging().getLogging_start_dtg());
             ps.setString(11, file.getMessage().getFlight_data().getPayload().getCamera().getSerial_number());
             ps.setString(12, file.getMessage().getFlight_data().getPayload().getCamera().getModel());
             ps.setString(13, file.getMessage().getFlight_data().getPayload().getCamera().getFirmware_version());
@@ -73,22 +77,51 @@ public class LogfileRepositoryImpl implements LogfileRepository {
             ps.setString(16, file.getMessage().getFlight_data().getRemote_controller().getSerial_number());
             ps.setString(17, file.getMessage().getFlight_data().getRemote_controller().getFirmware_version());
             ps.setString(18, file.getMessage().getFlight_data().getAircraft().getManufacturer());
-            ps.setString(29, file.getMessage().getFlight_data().getAircraft().getSerial_number());
+            ps.setString(19, file.getMessage().getFlight_data().getAircraft().getSerial_number());
             ps.setString(20, file.getMessage().getFlight_data().getAircraft().getName());
             ps.setString(21, file.getMessage().getFlight_data().getAircraft().getModel());
             ps.setString(22, file.getMessage().getFlight_data().getAircraft().getFirmware_version());
-            ps.setDouble(23, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lat()));
-            ps.setDouble(24, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lon()));
-            ps.setDouble(25, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getFlight_return_time()));
-            ps.setInt(26, Integer.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_power()));
-            ps.setInt(27, Integer.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getReturn_power()));
-            ps.setDouble(28, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_radius()));
-            ps.setDouble(29, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_time()));
+            if (file.getMessage().getFlight_data().getSummary().getHome_location_lat() != null) {
+                ps.setDouble(23, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lat()));
+            } else {
+                ps.setNull(23, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getHome_location_lon() != null) {
+                ps.setDouble(24, Double.valueOf(file.getMessage().getFlight_data().getSummary().getHome_location_lon()));
+            } else {
+                ps.setNull(24, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getFlight_return_time() != null) {
+                ps.setDouble(25, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getFlight_return_time()));
+            } else {
+                ps.setNull(25, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_power() != null) {
+                ps.setInt(26, Integer.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_power()));
+            } else {
+                ps.setNull(26, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getReturn_power() != null) {
+                ps.setInt(27, Integer.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getReturn_power()));
+            } else {
+                ps.setNull(27, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_radius() != null) {
+                ps.setDouble(28, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_radius()));
+            } else {
+                ps.setNull(28, Types.NUMERIC);
+            }
+            if (file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_time() != null) {
+                ps.setDouble(29, Double.valueOf(file.getMessage().getFlight_data().getSummary().getAircraft_smart_gohome().getLanding_time()));
+            } else {
+                ps.setNull(29, Types.NUMERIC);
+            }
+
             ps.setString(30, file.getMessage().getFlight_data().getGcs().getManufacturer());
             ps.setString(31, file.getMessage().getFlight_data().getGcs().getModel());
             ps.setString(32, file.getMessage().getFlight_data().getGcs().getVersion());
-            ps.setString(33, String.valueOf(file.getMessage().getFlight_data().getFlight_session_start()));
-            ps.setString(34, String.valueOf(file.getMessage().getFlight_data().getFlight_session_end()));
+            ps.setString(33, file.getMessage().getFlight_data().getFlight_session_start());
+            ps.setString(34, file.getMessage().getFlight_data().getFlight_session_end());
             ps.setString(35, file.getMessage().getFlight_data().getFlight_controller().getSerial_number());
             ps.setString(36, file.getMessage().getFlight_data().getFlight_controller().getFirmware_version());
             ps.setString(37, file.getMessage().getFlight_data().getBattery().getSerial_number());
@@ -176,18 +209,28 @@ public class LogfileRepositoryImpl implements LogfileRepository {
         gcs.setVersion(rs.getString("gcs_version"));
 
         AircraftSmartGohome gohome = new AircraftSmartGohome();
-        gohome.setFlight_return_time(String.valueOf(rs.getDouble("aircraft_smart_gohome_flight_return_time")));
-        gohome.setLanding_power(String.valueOf(rs.getInt("aircraft_smart_gohome_landing_power")));
-        gohome.setReturn_power(String.valueOf(rs.getInt("aircraft_smart_gohome_return_power")));
-        gohome.setLanding_radius(String.valueOf(rs.getDouble("aircraft_smart_gohome_landing_radius")));
-        gohome.setLanding_time(String.valueOf(rs.getDouble("aircraft_smart_gohome_landing_time")));
+        if (rs.getString("aircraft_smart_gohome_flight_return_time") != null) {
+            gohome.setFlight_return_time(String.valueOf(rs.getDouble("aircraft_smart_gohome_flight_return_time")));
+        }
+        if (rs.getString("aircraft_smart_gohome_landing_power") != null) {
+            gohome.setLanding_power(String.valueOf(rs.getInt("aircraft_smart_gohome_landing_power")));
+        }
+        if (rs.getString("aircraft_smart_gohome_return_power") != null) {
+            gohome.setReturn_power(String.valueOf(rs.getInt("aircraft_smart_gohome_return_power")));
+        }
+        if (rs.getString("aircraft_smart_gohome_landing_radius") != null) {
+            gohome.setLanding_radius(String.valueOf(rs.getDouble("aircraft_smart_gohome_landing_radius")));
+        }
+        if (rs.getString("aircraft_smart_gohome_landing_time") != null) {
+            gohome.setLanding_time(String.valueOf(rs.getDouble("aircraft_smart_gohome_landing_time")));
+        }
 
         Battery battery = new Battery();
         battery.setSerial_number(rs.getString("battery_serial_number"));
         battery.setRemaining_life(rs.getString("battery_remaining_life"));
         battery.setDischarges(rs.getString("battery_discharges"));
         battery.setFull_charge_volume(rs.getString("battery_full_charge_volume"));
-        battery.setCell_number(rs.getString("batttery_cell_number"));
+        battery.setCell_number(rs.getString("battery_cell_number"));
         battery.setFirmware_version(rs.getString("battery_firmware_version"));
 
         LogfileDeviceOrigin origin = new LogfileDeviceOrigin();
@@ -198,11 +241,11 @@ public class LogfileRepositoryImpl implements LogfileRepository {
 
         FlightController flightController = new FlightController();
         flightController.setFirmware_version(rs.getString("flight_controller_firmware_version"));
-        flightController.setSerial_number("flight_controller_serial_number");
+        flightController.setSerial_number(rs.getString("flight_controller_serial_number"));
 
         RemoteController remoteController = new RemoteController();
         remoteController.setFirmware_version(rs.getString("remote_controller_firmware_version"));
-        remoteController.setSerial_number(rs.getString("remote_controller_serial_numbers"));
+        remoteController.setSerial_number(rs.getString("remote_controller_serial_number"));
 
         FlightSummary summary = new FlightSummary();
         summary.setHome_location_lat(rs.getString("home_location_lat"));
@@ -216,17 +259,17 @@ public class LogfileRepositoryImpl implements LogfileRepository {
         flightData.setAircraft(aircraft);
         flightData.setSummary(summary);
         flightData.setGcs(gcs);
-        flightData.setFlight_session_start(rs.getString("flight_session_start").toString());
-        flightData.setFlight_session_end(rs.getString("flight_session_end").toString());
+        flightData.setFlight_session_start(rs.getString("flight_session_start"));
+        flightData.setFlight_session_end(rs.getString("flight_session_end"));
         flightData.setFlight_controller(flightController);
         flightData.setLogfile_device_origin(origin);
 
         FlightLog flightLog = new FlightLog();
         flightLog.setAltitude_system(rs.getString("altitude_system"));
-        flightLog.setLogging_start_dtg(rs.getString("logging_start_dtg").toString());
+        flightLog.setLogging_start_dtg(rs.getString("logging_start_dtg"));
 
         FlightLogMessageFile messageFile = new FlightLogMessageFile();
-        messageFile.setCreation_dtg(rs.getString("file_creation_dtg").toString());
+        messageFile.setCreation_dtg(rs.getString("file_creation_dtg"));
         messageFile.setLogging_type(rs.getString("file_logging_type"));
         messageFile.setFilename(rs.getString("filename"));
 
@@ -246,7 +289,6 @@ public class LogfileRepositoryImpl implements LogfileRepository {
         logfile.setMessage(logMessage);
 
         return logfile;
-
     };
 
 }

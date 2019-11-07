@@ -22,7 +22,7 @@ public class FlightLogKeyRepositoryImpl implements FlightLogKeyRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FlightLogKeyRepositoryImpl.class);
 
-    private static final String BATCH_INSERT_SQL = "INSERT INTO flight_log_key (logfile_id, field_name, order) " +
+    private static final String BATCH_INSERT_SQL = "INSERT INTO flight_log_key (logfile_id, field_name, key_order) " +
             "VALUES (?, ?, ?)";
 
     private JdbcTemplate jdbcTemplate;
@@ -64,7 +64,7 @@ public class FlightLogKeyRepositoryImpl implements FlightLogKeyRepository {
     @Override
     public List<FlightLogKey> findByLogfileId(Integer logfileId) {
         List<FlightLogKey> keys = jdbcTemplate.query(
-                "SELECT * FROM flight_log_key WHERE logfile_id = ? ORDER BY order ASC",
+                "SELECT * FROM flight_log_key WHERE logfile_id = ? ORDER BY key_order ASC",
                 logKeyRowMapper,
                 logfileId
         );
@@ -77,7 +77,7 @@ public class FlightLogKeyRepositoryImpl implements FlightLogKeyRepository {
 
         key.setLogfile_id(rs.getInt("logfile_id"));
         key.setFieldName(rs.getString("field_name"));
-        key.setOrder(rs.getInt("order"));
+        key.setOrder(rs.getInt("key_order"));
 
         return key;
     };

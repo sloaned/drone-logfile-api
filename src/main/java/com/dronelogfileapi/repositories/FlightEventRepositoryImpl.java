@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class FlightEventRepositoryImpl implements FlightEventRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(FlightEventRepositoryImpl.class);
 
     private static final String BATCH_INSERT_SQL = "INSERT INTO flight_event (logfile_id, event_info, event_timestamp, " +
-            "event_type) VALUES (?, ?, ?)";
+            "event_type) VALUES (?, ?, ?, ?)";
 
     private JdbcTemplate jdbcTemplate;
 
