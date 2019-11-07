@@ -1,8 +1,8 @@
 # Drone Logfile API #
 This sample API allows users to save and retrieve drone logfiles, and also get information about how data changed between the start and end of a drone flight.
 
-## Setup ##
-Setup MySQL locally, or use a Docker instance. 
+## Local Setup ##
+Setup MySQL, or use a Docker container. 
 
 ```
 MySQL version: 8.0.18
